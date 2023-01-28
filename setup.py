@@ -14,7 +14,7 @@ setup(
     author_email="jngrant@live.com",
     packages=find_packages(exclude=["tests"]),
     url="https://github.com/sempervent/python-dummy-db",
-    install_requires=Path('requriements.txt').read_text(
+    install_requires=Path('requirements.txt').read_text(
         encoding='UTF-8').split(r'\n'),
     extras_requrie={
         'dev': Path('requirements-dev.txt').read_text(
