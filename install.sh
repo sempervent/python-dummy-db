@@ -45,6 +45,11 @@ verify() { # {{{2
   pylint "$(pwd)"
   pytest tests/
 } # 2}}}
+clean() { # {{{2
+  find . -name "*.pyc" -delete -o -name "__pycache__" -delete
+  find . -name "*.egg-info" -exec rm -rf {} +
+  find . -name "build" -exec rm -rf {} +
+} # 2}}}
 # 1}}} 
 # arguments {{{1 
 while :; do
@@ -55,6 +60,10 @@ while :; do
       ;; # 3}}}
     install) # install the package {{{3
       install_pddb
+      exit
+      ;; # 3}}}
+    clean) # clean up compile and egg files {{{3
+      clean
       exit
       ;; # 3}}}
     -h|-\?|--help) # help {{{3 

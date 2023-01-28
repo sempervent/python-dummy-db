@@ -16,6 +16,7 @@ pydantic = "*"
 
 [scripts]
 verify = "./install.sh verify"
+clean = "./install.sh clean"
 
 [requires]
-python >= "3.8"
+python = ">=3.8"
