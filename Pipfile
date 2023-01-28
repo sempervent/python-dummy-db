@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+pipenv = "*"
+pytest = "*"
+pylint = "*"
+flake8 = "*"
+
+[packages]
+sqlalchemy = "*"
+psycopg2-binary = "*"
+pydantic = "*"
+
+[scripts]
+verify = "./install.sh verify"
+
+[requires]
+python >= "3.8"

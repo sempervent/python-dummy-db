@@ -1,24 +1,38 @@
 #!/usr/bin/env python3
 """Define generic fields."""
+# pylint: disable=too-few-public-methods
 from typing import Optional, Any, List, Union
-from uuid4 import uuid4, UUID
+from uuid import uuid4, UUID
 from pydantic import BaseModel, SecretStr
 
 
 class Auth(BaseModel):
     """An Auth object to authenticate with."""
-    user: str
-    password: Union[str, SecretStr]
+    user: Optional[str] = None
+    secret: Union[str, SecretStr]
 
     def hash(self):
         """Hash the password behind SecretStr."""
-        if not isinstance(self.password, SecretStr):
-            self.password = SecretStr(self.password)
+        if not isinstance(self.secret, SecretStr):
+            self.secret = SecretStr(self.secret)
+
+
+class Connection(BaseModel):
+    """Connection object."""
+    auth: Optional[Auth] = None
+    protocol: Optional[str] = None
+    hostname: Optional[str] = None
+    database: Optional[str] = None
+
+
+class Database(BaseModel):
+    """Provide database connection information."""
+    connection: Connection
 
 
 class Schema(BaseModel):
     """Provide the Schema to connect to."""
-    auth: Optional[Auth]=None
+    database: Optional[Database] = None
     schema: str
 
 

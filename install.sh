@@ -37,7 +37,8 @@ show_help() { # {{{2
     die "Failed to display usage information"
 } # 2}}}
 install_pddb() { # {{{2
-  pip install .[dev]
+  pipenv lock --clear && \
+    pipenv install --dev
 } # 2}}}
 verify() { # {{{2
   flake8 .

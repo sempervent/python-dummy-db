@@ -1,4 +1,4 @@
+pipenv
 pytest
 pylint
 flake8
-htmlcov
