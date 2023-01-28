@@ -13,6 +13,7 @@ flake8 = "*"
 sqlalchemy = "*"
 psycopg2-binary = "*"
 pydantic = "*"
+python-dummy-db = {editable = true, path = "."}
 
 [scripts]
 verify = "./install.sh verify"

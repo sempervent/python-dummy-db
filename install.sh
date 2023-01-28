@@ -41,9 +41,12 @@ install_pddb() { # {{{2
     pipenv install --dev
 } # 2}}}
 verify() { # {{{2
-  flake8 .
-  pylint "$(pwd)"
-  pytest tests/
+  OLD_PYTHONPATH="$PYTHONPATH"
+  PYTHONPATH="$(pwd)"
+  pipenv run flake8 .
+  pipenv run pylint "$(pwd)"
+  pipenv run pytest tests/
+  PYTHONPATH="$OLD_PYTHONPATH"
 } # 2}}}
 clean() { # {{{2
   find . -name "*.pyc" -delete -o -name "__pycache__" -delete

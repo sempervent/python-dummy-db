@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8f5e29e54301045d7a748bb2738e29b7ef6f37446476e15129bb8dd464c9db93"
+            "sha256": "2c79ecf5faf5d995e6cb613e9a11cbdab68727feebe02866b8c65b66a47328ca"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -200,6 +200,10 @@
             ],
             "index": "pypi",
             "version": "==1.10.4"
+        },
+        "python-dummy-db": {
+            "editable": true,
+            "path": "."
         },
         "sqlalchemy": {
             "hashes": [
