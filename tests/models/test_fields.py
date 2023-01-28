@@ -10,4 +10,3 @@ def test_field():
     int_field.relation(str_field)
     assert int_field in str_field.relations
     assert str_field in int_field.relations
-

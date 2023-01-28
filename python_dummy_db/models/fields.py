@@ -33,7 +33,7 @@ class Database(BaseModel):
 class Schema(BaseModel):
     """Provide the Schema to connect to."""
     database: Optional[Database] = None
-    schema: str
+    schema_name: str
 
 
 class Field(BaseModel):
@@ -61,10 +61,12 @@ class Field(BaseModel):
 
 class Table(BaseModel):
     """The Table BaseModel exists to hold a bunch of Fields."""
-    schema: Optional[Schema] = None
+    schema_name: Optional[Schema] = None
     fields: Optional[List[Any]] = None
+    database: Optional[Database] = None
 
     def field(self, field: Field):
+        """Assign a field to the table object."""
         if self.fields is None:
             self.fields = []
         self.fields.append(field)
