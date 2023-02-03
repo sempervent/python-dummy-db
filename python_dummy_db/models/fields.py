@@ -6,36 +6,6 @@ from uuid import uuid4, UUID
 from pydantic import BaseModel, SecretStr
 
 
-class Auth(BaseModel):
-    """An Auth object to authenticate with."""
-    user: Optional[str] = None
-    secret: Union[str, SecretStr]
-
-    def hash(self):
-        """Hash the password behind SecretStr."""
-        if not isinstance(self.secret, SecretStr):
-            self.secret = SecretStr(self.secret)
-
-
-class Connection(BaseModel):
-    """Connection object."""
-    auth: Optional[Auth] = None
-    protocol: Optional[str] = None
-    hostname: Optional[str] = None
-    database: Optional[str] = None
-
-
-class Database(BaseModel):
-    """Provide database connection information."""
-    connection: Connection
-
-
-class Schema(BaseModel):
-    """Provide the Schema to connect to."""
-    database: Optional[Database] = None
-    schema_name: str
-
-
 class Field(BaseModel):
     """The Field BaseModel exists to provide as the base for Field
         objects. A Field object can be generated with random data.
@@ -59,14 +29,6 @@ class Field(BaseModel):
         self.relations.append(new_relation)
 
 
-class Table(BaseModel):
-    """The Table BaseModel exists to hold a bunch of Fields."""
-    schema_name: Optional[Schema] = None
-    fields: Optional[List[Any]] = None
-    database: Optional[Database] = None
-
-    def field(self, field: Field):
-        """Assign a field to the table object."""
-        if self.fields is None:
-            self.fields = []
-        self.fields.append(field)
+class IntegerField(Field):
+    """An Integer field."""
+    value: int
