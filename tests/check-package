@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# run checks for this package
+pipenv run flake8 .
+pipenv run pylint $(pwd)
+pipenv run pytest tests/

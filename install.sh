@@ -12,13 +12,6 @@ PROJECT=${PROJECT:-"Generate Dummy Databases with Python"}
 # 1}}} 
 # functions {{{1 
 banner() { # {{{2
-  # make a static banner with embeded color codes
-  # BANNER=$(cat <<EOF\n  EOF;
-  # for a simple banner use
-  # BANNER="The \n$PROJECT\n\t script"
-  # or have a little funn
-  # BANNER=$(figlet "$PROJECT" | cowsay)
-  # or do some coloring
   BANNER="\\e[32m$PROJECT\\e[39m"
   echo -e "$BANNER"
 } # 2}}} 
@@ -41,12 +34,12 @@ install_pddb() { # {{{2
     pipenv install --dev
 } # 2}}}
 verify() { # {{{2
-  OLD_PYTHONPATH="$PYTHONPATH"
-  PYTHONPATH="$(pwd)"
+#  OLD_PYTHONPATH="$PYTHONPATH"
+#  PYTHONPATH="$(pwd)"
   pipenv run flake8 .
   pipenv run pylint "$(pwd)"
   pipenv run pytest tests/
-  PYTHONPATH="$OLD_PYTHONPATH"
+#  PYTHONPATH="$OLD_PYTHONPATH"
 } # 2}}}
 clean() { # {{{2
   find . -name "*.pyc" -delete -o -name "__pycache__" -delete
@@ -54,6 +47,7 @@ clean() { # {{{2
   find . -name "build" -exec rm -rf {} +
 } # 2}}}
 # 1}}} 
+banner
 # arguments {{{1 
 while :; do
   case $1 in # check arguments {{{2 
@@ -84,5 +78,4 @@ while :; do
 done
 # 1}}} 
 # logic {{{1 
-banner
 # 1}}} 

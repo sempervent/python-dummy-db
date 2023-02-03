@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name="python-dummy-db",
+    name="python_dummy_db",
     version=Path('VERSION').read_text(encoding='UTF-8'),
     description="Generate dummy databases with some fake data in them.",
     long_description=Path('README.md').read_text(encoding='UTF-8'),

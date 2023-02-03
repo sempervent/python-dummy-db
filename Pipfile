@@ -10,14 +10,12 @@ pylint = "*"
 flake8 = "*"
 
 [packages]
-sqlalchemy = "*"
-psycopg2-binary = "*"
-pydantic = "*"
-python-dummy-db = {editable = true, path = "."}
+python-dummy-db = {path = "."}
 
 [scripts]
 verify = "./install.sh verify"
 clean = "./install.sh clean"
+test ="pylint $(pwd)"
 
 [requires]
 python = ">=3.8"

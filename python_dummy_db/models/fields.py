@@ -5,6 +5,9 @@ from typing import Optional, Any, List, Union, Callable
 from random import randint
 from uuid import uuid4, UUID
 from pydantic import BaseModel, SecretStr
+from loguru import logger
+
+from python_dummy_db.fxns import noop
 
 
 class Field(BaseModel):
@@ -16,7 +19,7 @@ class Field(BaseModel):
     data_type: Optional[Any] = None
     relations: Optional[List[Any]] = None
     values: Optional[List[Any]] = None
-    rand_func: Optional[Callable] = None
+    rand_func: Callable = noop
 
     def relation(self, new_relation: Any):
         """Create a new relationships object and existing relations.
@@ -33,19 +36,29 @@ class Field(BaseModel):
 
     # pylint: disable=too-many-arguments
     def generate_values(
-        self, N: int = 0, min_num: int = 0, max_num: int = 100,
+        self, *args, N: int = 0,
         store: bool = True, return_values: bool = False,
-        append: bool = True,
+        append: bool = True, rand_func: Optional[Callable] = None,
+        **kwargs,
     ) -> Optional[list]:
         """Generate N random values from min to max."""
         if return_values is False and store is False and append is False:
+            return None
+        if rand_func is None and self.rand_func is None:
             return None
         if N < 1:
             return None
         values = []
         for _ in range(N):
-            values.append(self.random_func(min_num, max_num))
+            if rand_func is not None and callable(rand_func):
+                values.append(rand_func(*args, **kwargs))
+            elif self.rand_func is not None and callable(self.rand_func):
+                values.append(self.rand_func(*args, **kwargs))
+            else:
+                logger.warn('No rand_func specified in self or as argument.')
         if append is True:
+            if self.values is None:
+                self.values = []
             self.values.extend(values)
         if store is True and append is False:
             self.values = values
