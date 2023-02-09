@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Define objects for the databse to use."""
 from os import environ
-from typing import Optional, Union, List, Any
+from typing import Optional, Union, List, Any, Callable
 
 from pydantic import BaseModel, SecretStr
 
+from python_dummy_db.fxns import noop
 from python_dummy_db.models.fields import Field
 
 
@@ -40,6 +41,8 @@ class Connection(BaseModel):
     protocol: Optional[str] = None
     hostname: Optional[str] = None
     database: Optional[str] = None
+    module: Optional[str] = None
+    connection_callable: Callable = noop
 
 
 class Database(BaseModel):

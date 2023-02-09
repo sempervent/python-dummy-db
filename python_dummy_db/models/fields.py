@@ -34,11 +34,13 @@ class Field(BaseModel):
             self.relations = []
         self.relations.append(new_relation)
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-branches
     def generate_values(
-        self, *args, N: int = 0,
-        store: bool = True, return_values: bool = False,
-        append: bool = True, rand_func: Optional[Callable] = None,
+        self, *args, N: int = 1,
+        store: bool = True,
+        return_values: bool = False,
+        append: bool = True,
+        rand_func: Optional[Callable] = None,
         **kwargs,
     ) -> Optional[list]:
         """Generate N random values from min to max."""
@@ -55,17 +57,21 @@ class Field(BaseModel):
             elif self.rand_func is not None and callable(self.rand_func):
                 values.append(self.rand_func(*args, **kwargs))
             else:
-                logger.warn('No rand_func specified in self or as argument.')
+                logger.warning(
+                    'No rand_func specified in self or as argument.')
         if append is True:
             if self.values is None:
                 self.values = []
             self.values.extend(values)
-        if store is True and append is False:
-            self.values = values
+        elif store is True:
+            if len(values) > 1:
+                self.values = values
+            else:
+                self.values = [values]
         if return_values is True:
             return values
         return None
-    # pylint: enable=too-many-arguments
+    # pylint: enable=too-many-arguments,too-many-branches
 
 
 class IntegerField(Field):
