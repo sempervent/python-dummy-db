@@ -10,7 +10,7 @@ pylint = "*"
 flake8 = "*"
 
 [packages]
-python-dummy-db = {path = "."}
+python-dummy-db = {editable = true, path = "."}
 
 [scripts]
 verify = "./install.sh verify"
