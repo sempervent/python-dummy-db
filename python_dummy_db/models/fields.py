@@ -4,7 +4,7 @@
 from typing import Optional, Any, List, Union, Callable, Type
 from random import randint, seed
 from uuid import uuid4, UUID
-from pydantic import BaseModel, SecretStr
+from pydantic import BaseModel
 from loguru import logger
 
 from python_dummy_db.fxns import noop
@@ -39,7 +39,7 @@ class Field(BaseModel):
         # pylint: disable=comparison-with-callable
         if self.seed_kwargs is None and seed_kwargs is None and \
                 seed == seed_func:
-            self.seed_kwargs = {'a': randint(0, 1000)}
+            self.seed_kwargs = {'a': None}
         # pylint: enable=comparison-with-callable
 
     def verify(
@@ -75,21 +75,27 @@ class Field(BaseModel):
         **kwargs,
     ) -> Optional[list]:
         """Generate N random values from min to max."""
-        if return_values is False and store is False and append is False:
+        # pylint: disable=too-many-boolean-expressions
+        print(f'{args=}')
+        print(f'{kwargs=}')
+        if (return_values is False and store is False and append is False) \
+                or (rand_func is None and self.rand_func is None) \
+                or (self.rand_func == noop or not callable(self.rand_func)) \
+                or (not isinstance(N, int) or N < 1) \
+                or (not args and not kwargs):
             return None
-        if rand_func is None and self.rand_func is None:
-            return None
-        if N < 1:
-            return None
+        # pylint: enable=too-many-boolean-expressions
         values = []
         for _ in range(N):
-            if seed_kwargs:
-                self.seed_function(**seed_kwargs)
-            elif isinstance(self.seed_kwargs, dict):
-                self.seed_function(**self.seed_kwargs)
+            if seed_kwargs and callable(self.seed_func):
+                self.seed_func(**seed_kwargs)
+            elif isinstance(self.seed_kwargs, dict) and \
+                    callable(self.seed_func):
+                self.seed_func(**self.seed_kwargs)
             if rand_func is not None and callable(rand_func):
                 values.append(rand_func(*args, **kwargs))
-            elif self.rand_func is not None and callable(self.rand_func):
+            elif (self.rand_func is not None and self.rand_func != noop) \
+                    and callable(self.rand_func):
                 values.append(self.rand_func(*args, **kwargs))
             else:
                 logger.warning(
@@ -111,8 +117,4 @@ class Field(BaseModel):
 
 class IntegerField(Field):
     """An Integer field."""
-    value: Optional[int] = None
-    random_func: Callable = randint
-    data_type: int
-
-
+    rand_func: Callable = randint
