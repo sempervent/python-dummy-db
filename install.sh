@@ -34,17 +34,20 @@ install_pddb() { # {{{2
     pipenv install --dev
 } # 2}}}
 verify() { # {{{2
-#  OLD_PYTHONPATH="$PYTHONPATH"
-#  PYTHONPATH="$(pwd)"
+  OLD_PYTHONPATH="$PYTHONPATH"
+  PYTHONPATH="$(pwd)"
   pipenv run flake8 .
   pipenv run pylint "$(pwd)"
   pipenv run pytest tests/
-#  PYTHONPATH="$OLD_PYTHONPATH"
+  PYTHONPATH="$OLD_PYTHONPATH"
 } # 2}}}
 clean() { # {{{2
   find . -name "*.pyc" -delete -o -name "__pycache__" -delete
   find . -name "*.egg-info" -exec rm -rf {} +
   find . -name "build" -exec rm -rf {} +
+} # 2}}}
+coverage() { # {{{2
+  docker compose up -d --build 
 } # 2}}}
 # 1}}} 
 banner
@@ -63,6 +66,10 @@ while :; do
       clean
       exit
       ;; # 3}}}
+    coverage) # create and serve a coverage image {{{3
+      coverage
+      exit
+      ;;
     -h|-\?|--help) # help {{{3 
       banner
       show_help

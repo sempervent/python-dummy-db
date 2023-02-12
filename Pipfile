@@ -8,6 +8,7 @@ pipenv = "*"
 pytest = "*"
 pylint = "*"
 flake8 = "*"
+coverage = "*"
 
 [packages]
 python-dummy-db = {editable = true, path = "."}
@@ -15,7 +16,8 @@ python-dummy-db = {editable = true, path = "."}
 [scripts]
 verify = "./install.sh verify"
 clean = "./install.sh clean"
-test ="pylint $(pwd)"
+runtest ="pylint $(pwd)"
+coverage = "./install.sh coverage"
 
 [requires]
 python = ">=3.8"
