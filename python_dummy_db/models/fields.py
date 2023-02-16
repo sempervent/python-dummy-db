@@ -9,6 +9,7 @@ from loguru import logger
 
 from python_dummy_db.fxns import noop
 from python_dummy_db.types import NoopType
+from python_dummy_db.distributions import Distribution
 
 
 class Field(BaseModel):
@@ -23,6 +24,7 @@ class Field(BaseModel):
     rand_func: Callable = noop
     seed_func: Callable = seed
     seed_kwargs: Optional[dict] = None
+    distribution: Optional[Distribution] = None
 
     def define_seed(self,
                     seed_func: Optional[Callable] = None,
