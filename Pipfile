@@ -18,6 +18,7 @@ verify = "./install.sh verify"
 clean = "./install.sh clean"
 runtest ="pylint $(pwd)"
 coverage = "./install.sh coverage"
+tests = "pipenv run pytest tests/"
 
 [requires]
 python = ">=3.8"
