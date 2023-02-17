@@ -29,6 +29,7 @@ DEBT_PER_PERSON = {  # debt per person
 }
 
 DEBT_PER_PERSON_WITH_UNITS = {
+    **DEBT_PER_PERSON,
     "use_units": True,  # force to strings and use units
     "unit": "Debt ($)",  # the amount is total debt, this is the unit
     "n_unit": "People",  # n represents all the people in the world
