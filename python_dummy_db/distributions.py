@@ -1,16 +1,112 @@
 #!/usr/bin/env python3
 """Define distributions to use."""
 from logging import getLogger
-from typing import List, Union, Iterable, Optional
+from typing import List, Union, Optional
 
 from pydantic import BaseModel
 import numpy as np
 from pandas import DataFrame
 
 from python_dummy_db.types import NumericType
+from python_dummy_db.methods.distributions import DISTRIBUTION_SWITCH
 
 
 class Distribution(BaseModel):
+    """The Distribution object can distribute a resourece to each member of
+       a population according to the distribution method called.
+
+       Args:
+           population_size: int how many members are in a population
+           total_resource: NumericType how much of a resource is available
+           percentages: Optional list of percentages to calculate
+           population_distribution: Optional list of amount of resource per
+               member of the population
+    """
+    population_size: int
+    total_resource: Union[NumericType]
+    # optional arguments
+    percentages: Optional[List[float]] = None
+    # do not set these arguments
+    population_distribution: List[float] = []
+
+    def distribute(
+        self, distribution: str, give_value: bool = False, **kwargs
+    ) -> Optional[list]:
+        """Distribution a distribution."""
+        try:
+            self.population_distribution = DISTRIBUTION_SWITCH[distribution](
+                population_size=self.population_size,
+                total_resource=self.total_resource,
+                **kwargs,
+            )
+        except KeyError as exc:
+            raise TypeError(
+                f'Distribution requested, {distribution}, is not available.'
+            ) from exc
+        return self.population_distribution
+
+    def classify_population(
+        self, percentages: Optional[List[float]] = None
+    ) -> list:
+        """Classify the population according to percentages.
+        Args:
+            percentages: optional list of percentages
+        """
+        if percentages is None and self.percentages is not None:
+            percentages = self.percentages
+        sorted_distribution = np.sort(self.population_distribution)[::-1]
+        resource_amounts = []
+        cumulative_sum = 0
+        for percentage in percentages:
+            wealth_amount = self.total_resource * percentage
+            cumulative_sum += wealth_amount
+            resource_amounts.append(cumulative_sum)
+        population_classification = []
+        for resource in sorted_distribution:
+            for i, resource_amount in enumerate(resource_amounts):
+                if resource > resource_amount:
+                    population_classification.append(i)
+                    break
+        return population_classification
+
+    def mean_allocation(self) -> Union[NumericType]:
+        """Return the mean allocation."""
+        return sum(self.population_distribution) / self.population_size
+
+    def standard_deviation(self) -> Union[NumericType]:
+        """Return the standard deviation."""
+        mean = self.mean_allocation()
+        variance = sum([(x - mean) ** 2
+                        for x in self.population_distribution]) \
+            / self.population_size
+        return variance ** 0.5
+
+    def min_allocation(self) -> Union[NumericType]:
+        """Return the minimum allocaiton."""
+        return min(self.population_distribution)
+
+    def max_allocation(self) -> Union[NumericType]:
+        """Return the maximum allocation."""
+        return max(self.population_distribution)
+
+    def cumulative_distribution(self) -> Union[NumericType]:
+        """Return a cumulative sum of the distribution."""
+        return np.cumsum(self.population_distribution)
+
+    def percentile_allocations(
+        self,
+        percentile: Union[NumericType] = 0.01,
+    ) -> Union[NumericType]:
+        """Return the allocaiton of a given percentile."""
+        return np.percentile(self.population_distribution, percentile)
+
+    def get_percentages(self) -> Optional[DataFrame]:
+        """Get a table describing the dataset based on the percentages."""
+        if self.percentages is not None and len(self.percentages) > 0:
+            return None
+
+
+class OldDistribution(BaseModel):
     """The Distribution BaseModel exists to provide the base for Distribution
        objects.
 

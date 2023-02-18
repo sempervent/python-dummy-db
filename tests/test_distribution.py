@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Test the python_dummy_db.distributions module."""
-from pandas import DataFrame
+import pytest
+import numpy as np
 
+from python_dummy_db.types import NumericType
 from python_dummy_db.distributions import Distribution
+from python_dummy_db.methods.distributions import DISTRIBUTION_SWITCH as DS
 
 from tests.test_data.distributions import (
     WEALTH_PER_PERSON,
-    WEALTH_PER_PERSON_WITH_UNITS,
-    DISTRIBUTIONS,
+    DISTRIBUTION_TEST_DATA as DTD,
 )
 
 
@@ -15,28 +17,27 @@ def test_distribution_class():
     """Test functional requirements of the Distribution class."""
     d = Distribution(**WEALTH_PER_PERSON)
     # test all methods for the wealth figures
-    wealth_per_person = {
-        'equal': d.equal(),
-        'left_skewed': d.left_skewed(),
-        'right_skewed':  d.right_skewed(),
-        'log_normal': d.log_normal(),
-        'exponential': d.exponential(),
-        'pareto': d.pareto(),
-        'gaussian': d.gaussian(),
-        'binomial': d.binomial(),
-        'poisson': d.poisson(),
-        'uniform': d.uniform(),
-    }
+    wealth_per_person = {}
+    for key in DS:  # iterate over the available distributions
+        wealth_per_person[key] = d.distribute(distribution=key,
+                                              give_value=True)
     for key, value in wealth_per_person.items():
         # ensure that that each call to the distribution is a DataFrame
-        assert isinstance(value, DataFrame) is True
-        assert key in DISTRIBUTIONS  # test the test
-    # create using distribution method
-    wealth_per_person_via_distribution = {}
-    for distribution in DISTRIBUTIONS:
-        wealth_per_person_via_distribution[distribution] = \
-            d.distribution(dist_type=distribution)  # update the dict
-    assert wealth_per_person_via_distribution == wealth_per_person
-    for distribution in DISTRIBUTIONS:
-        assert wealth_per_person[distribution] == \
-            wealth_per_person_via_distribution[distribution]
+        assert isinstance(value, list) is True
+        assert key in DS  # test the test
+
+
+@pytest.mark.parametrize("distribution", DS.keys(), ids=DS.keys())
+@pytest.mark.parametrize("seed_data", DTD.values(), ids=DTD.keys())
+def test_distribution_insights(distribution, seed_data):
+    """Test the functional requirements of the Distribution class."""
+    d = Distribution(**seed_data)
+    d.distribute(distribution=distribution)
+    assert isinstance(d.population_distribution, list)
+    assert len(d.population_distribution) == d.population_size
+    assert isinstance(d.mean_allocation(), NumericType)
+    assert isinstance(d.standard_deviation(), NumericType)
+    assert isinstance(d.min_allocation(), NumericType)
+    assert isinstance(d.max_allocation(), NumericType)
+    assert isinstance(d.cumulative_distribution(), np.ndarray)
+    assert isinstance(d.percentile_allocations(), NumericType)
