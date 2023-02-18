@@ -12,6 +12,20 @@ from tests.test_data.distributions import (
     DISTRIBUTION_TEST_DATA as DTD,
 )
 
+def create_all_distributions() -> dict:
+    """Create all distributions with the test data."""
+    srl = {}
+    for category, data in DTD.items():
+        srl[category] = {}
+        for name, distribution in DS.items():
+            srl[category][name] = distribution(**data)
+    return srl
+
+
+def test_switch_operations():
+    """Test the DISTRIBUTION_SWITCH operations."""
+    srl =
+
 
 def test_distribution_class():
     """Test functional requirements of the Distribution class."""

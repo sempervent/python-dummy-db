@@ -43,7 +43,9 @@ class Distribution(BaseModel):
             raise TypeError(
                 f'Distribution requested, {distribution}, is not available.'
             ) from exc
-        return self.population_distribution
+        if give_value:
+            return self.population_distribution
+        return None
 
     def classify_population(
         self, percentages: Optional[List[float]] = None
