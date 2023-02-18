@@ -12,6 +12,6 @@ FROM package AS tester
 CMD ["pipenv", "run", "verify"]
 
 FROM package AS coverage
+WORKDIR /htmlcov
 EXPOSE 8000
-CMD ["coverage", "run", "-m", "pytest", "&&", "coverage", "html", "&&", \
-  "python", "-m", "http.server", "8000", "--bind", "0.0.0.0"]
+CMD ["python", "-m", "http.server", "8000", "--bind", "0.0.0.0"]

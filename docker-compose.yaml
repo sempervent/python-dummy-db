@@ -11,3 +11,7 @@ services:
     build:
       context: .
       target: coverage
+    volumes:
+      - ./htmlcov/:/htmlcov
+    ports:
+      - 8000:8000
